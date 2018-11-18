@@ -82,11 +82,14 @@ int main(){
 
 	//Define y calcula k1
 	xk1[0] = v[0];
+
+
 	xk1[1] = v[1];
 
-	vk1[1] = -(c/m)*norma(v)*v[0];
-	vk1[1] = -g -(c/m)*norma*v[0]/norma(v);
+	vk1[0] = -(c/m)*norma(v)*norma(v)*v[0]/norma(v);
 
+
+	vk1[1] = -g -(c/m)*norma(v)*norma(v)*v[1]/norma(v);
 
 
 	}
