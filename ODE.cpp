@@ -47,6 +47,24 @@ int main(){
 
 	v[1] = 300.0*sin(2*3.1416*45.0/360.0);
 
+	//Creo los arreglos para el metodo de solucion de RungeKutta
+	//Creo 4 ecuaciones para la posicion y 4 ecuaciones para la velocidad
+	//Posiciones
+	float xk1[2];
+	float xk2[2];
+	float xk3[2];
+	float xk4[2];
+
+
+	//Velocidad
+	float vk1[2];
+	float vk2[2];
+	float vk3[2];
+	float vk4[2];
+
+	
+
+
 
 
 
