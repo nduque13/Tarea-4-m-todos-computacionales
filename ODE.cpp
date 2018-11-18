@@ -91,6 +91,57 @@ int main(){
 
 	vk1[1] = -g -(c/m)*norma(v)*norma(v)*v[1]/norma(v);
 
+	//Define y calcula k2, empieza a involucrar el futuro
+
+	fut_v[0] = v[0] + 0.5*dt*vk1[0];
+
+
+	fut_v[1] = v[1] + 0.5*dt*vk1[1];
+	
+	xk2[0] = fut_v[0];
+
+
+	xk2[1] = fut_v[1]; //Con esto ya puedo definir la segunda ecuacion de la velocidad
+
+	vk2[0] = -(c/m)*norma(fut_v)*norma(fut_v)*fut_v[0]/norma(fut_v);
+
+
+
+	vk2[1] = -g -(c/m)*norma(fut_v)*norma(fut_v)*fut_v[1]/norma(fut_v);
+
+	//Define y calcula k3, involucra mas el futuro, es casi igual que la segunda ecuacion
+
+	fut_v[0] = v[0] + 0.5*dt*vk2[0];
+
+	fut_v[1] = v[1] + 0.5*dt*vk2[1];
+
+	xk3[0] = fut_v[0];
+
+	xk3[1] = fut_v[1];//Con esto ya puedo definir la tercera ecuacion de la velocidad
+
+	vk3[0] = -(c/m)*norma(fut_v)*norma(fut_v)*fut_v[0]/norma(fut_v);
+
+	vk3[1] = -g -(c/m)*norma(fut_v)*norma(fut_v)*fut_v[1]/norma(fut_v);
+
+	//Define y calcula k4, es igual que la tercera y la segunda
+
+	fut_v[0] = v[0] + 1.0*dt*vk3[0];
+
+	fut_v[1] = v[1] + 1.0*dt*vk3[1];
+
+	xk4[0] = fut_v[0];
+
+	xk4[1] = fut_v[1];//Con esto ya puedo definir la cuarta ecuacion de la velocidad
+
+	vk4[0] = -(c/m)*norma(fut_v)*norma(fut_v)*fut_v[0]/norma(fut_v);
+
+	vk4[1] = -g -(c/m)*norma(fut_v)*norma(fut_v)*fut_v[1]/norma(fut_v);
+
+
+
+
+
+
 
 	}
 
