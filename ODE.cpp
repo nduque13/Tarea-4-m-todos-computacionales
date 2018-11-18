@@ -2,10 +2,14 @@
 
 
 //Importa las librerias necesarias 
-#include "iostream"
-#include "fstream"
-#include "cmath"
-#include "cstdio"
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <cstdio>
+
+using std::cout;
+using std::cin;
+using std::endl;
 
 
 
@@ -18,10 +22,10 @@ float c=0.2;
 float m=0.2;
 
 
-float t, dt, tf;
-t = 0.0;
-tf = 5.0;
-dt = 0.0001;
+
+float t = 0.0;
+float tf = 5.0;
+float dt = 0.0001;
 
 
 //Defino un puntero que voy a usar mas tarde como la norma de un vector con dos entradas
@@ -69,7 +73,7 @@ int main(){
 
 	//Crea un archivo de salida que almacene posiciones y velocidades del proyectil
 
-	ofstream salida("salida.txt");
+	fstream salida("salida.txt");
 
 
 	do
@@ -137,11 +141,31 @@ int main(){
 
 	vk4[1] = -g -(c/m)*norma(fut_v)*norma(fut_v)*fut_v[1]/norma(fut_v);
 
+	//Uiliza las ecuaciones previamente definidas y calculadas para calcular los valores de posicion y velocidad
+
+	fut_x[0] = x[0] + dt/6.0*( xk1[0] + 2*xk2[0] + 2*xk3[0] + xk4[0]);
+
+	fut_x[1] = x[1] + dt/6.0*( xk1[1] + 2*xk2[1] + 2*xk3[1] + xk4[1]);
+
+	fut_v[0] = v[0] + dt/6.0*( vk1[0] + 2*vk2[0] + 2*vk3[0] + vk4[0]);
 
 
 
+	fut_v[1] = v[1] + dt/6.0*( vk1[1] + 2*vk2[1] + 2*vk3[1] + vk4[1]);
+
+	//Actualiza el futuro
+
+	x[0] = fut_x[0];
+
+	x[1] = fut_x[1];
+
+	v[0] = fut_v[0];
 
 
+
+	v[1] = fut_v[1];
+
+	t = t+dt
 
 	}
 
@@ -152,6 +176,10 @@ int main(){
 
 
 
-
+while (t<=tf);
 
 }
+
+
+
+
