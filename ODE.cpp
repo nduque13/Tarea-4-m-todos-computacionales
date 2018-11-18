@@ -62,7 +62,34 @@ int main(){
 	float vk3[2];
 	float vk4[2];
 
-	
+	//Crea los arreglos que almacenen el futuro para las posiciones y para las velocidades
+
+	float fut_x[2];
+	float fut_v[2];
+
+	//Crea un archivo de salida que almacene posiciones y velocidades del proyectil
+
+	ofstream salida("salida.txt");
+
+
+	do
+	{
+
+	//Antes de comenzar, exporta los datos para despues graficarlos
+	salida << x[0] << " " << x[1] << " " << v[0] << " " << v[1] << endl;
+
+	//Una vez hecha la ruta para exportar los datos, se empieza con el metodo de rungekutta, 4 ecuaciones, hay que definirlas y calcularlas todas
+
+	//Define y calcula k1
+	xk1[0] = v[0];
+	xk1[1] = v[1];
+
+	vk1[1] = -(c/m)*norma(v)*v[0];
+	vk1[1] = -g -(c/m)*norma*v[0]/norma(v);
+
+
+
+	}
 
 
 
