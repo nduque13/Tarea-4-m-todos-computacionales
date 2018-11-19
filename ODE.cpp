@@ -104,112 +104,140 @@ int main(){
 	float fut_x[2][8];
 	float fut_v[2][8];
 
-	//Crea un archivo de salida que almacene posiciones y velocidades del proyectil
+	//Crea varios archivos de salida que almacene posiciones y velocidades del proyectil
 
-	std::ofstream salida("salida.txt");
+	
+	ofstream salidax("x.txt");
+	ofstream saliday("y.txt");
+	ofstream salidavx("vx.txt");
+	ofstream salidavy("vy.txt");
+	
 
+	//Crea archivos de dstancia recorrida
+
+	float d_recorridax[8];
+	d_recorridax[0] = 0.0;
+	d_recorridax[1] = 0.0;
+	d_recorridax[2] = 0.0;
+	d_recorridax[3] = 0.0;
+	d_recorridax[4] = 0.0;
+	d_recorridax[5] = 0.0;
+	d_recorridax[6] = 0.0;
+	d_recorridax[7] = 0.0;
+
+	cout << d_recorridax[0] << " ";
+
+	float normav;
 
 	do
 	{
 
 	//Antes de comenzar, exporta los datos para despues graficarlos
-	salida << x[0] << " " << x[1] << " " << v[0] << " " << v[1] << endl;
+		for (int i = 0; i < 8; ++i)
+			{
+				// exportar datos
+			salidax << x[0][i] << " ";
+			saliday << x[1][i] << " ";
+			salidavx << v[0][i] << " ";
+			salidavy << v[1][i] << " ";
 
 	//Una vez hecha la ruta para exportar los datos, se empieza con el metodo de rungekutta, 4 ecuaciones, hay que definirlas y calcularlas todas
 
-	//Define y calcula k1
-	xk1[0] = v[0];
-
-
-	xk1[1] = v[1];
-
-	vk1[0] = -(c/m)*norma(v)*norma(v)*v[0]/norma(v);
-
-
-	vk1[1] = -g -(c/m)*norma(v)*norma(v)*v[1]/norma(v);
-
-	//Define y calcula k2, empieza a involucrar el futuro
-
-	fut_v[0] = v[0] + 0.5*dt*vk1[0];
-
-
-	fut_v[1] = v[1] + 0.5*dt*vk1[1];
+			// Calcula k1
+			xk1[0][i] = v[0][i];
+			xk1[1][i] = v[1][i];
+			normav = sqrt(pow(v[0][i],2) + pow(v[1][i],2));
+			vk1[0][i] = -(c/m)*normav*normav*v[0][i]/normav;
+			vk1[1][i] = -g -(c/m)*normav*normav*v[1][i]/normav;
 	
-	xk2[0] = fut_v[0];
+			//Calcula k2
+			fut_v[0][i] = v[0][i] + 0.5*dt*vk1[0][i];
+			fut_v[1][i] = v[1][i] + 0.5*dt*vk1[1][i];
+			xk2[0][i] = fut_v[0][i];
+			xk2[1][i] = fut_v[1][i];
+			normav = sqrt(pow(fut_v[0][i],2) + pow(fut_v[1][i],2));
+			vk2[0][i] = -(c/m)*normav*normav*fut_v[0][i]/normav;
+			vk2[1][i] = -g -(c/m)*normav*normav*fut_v[1][i]/normav;
+
+			//Calcula k3
+			fut_v[0][i] = v[0][i] + 0.5*dt*vk2[0][i];
+			fut_v[1][i] = v[1][i] + 0.5*dt*vk2[1][i];
+			xk3[0][i] = fut_v[0][i];
+			xk3[1][i] = fut_v[1][i];
+			normav = sqrt(pow(fut_v[0][i],2) + pow(fut_v[1][i],2));
+			vk3[0][i] = -(c/m)*normav*normav*fut_v[0][i]/normav;
+			vk3[1][i] = -g -(c/m)*normav*normav*fut_v[1][i]/normav;
+
+			//Calcula k4
+			fut_v[0][i] = v[0][i] + 1.0*dt*vk3[0][i];
+			fut_v[1][i] = v[1][i] + 1.0*dt*vk3[1][i];
+			xk4[0][i] = fut_v[0][i];
+			xk4[1][i] = fut_v[1][i];
+			normav = sqrt(pow(fut_v[0][i],2) + pow(fut_v[1][i],2));
+			vk4[0][i] = -(c/m)*normav*normav*fut_v[0][i]/normav;
+			vk4[1][i] = -g -(c/m)*normav*normav*fut_v[1][i]/normav;
 
 
-	xk2[1] = fut_v[1]; //Con esto ya puedo definir la segunda ecuacion de la velocidad
+			// Calcular los nuevos valores de posicion y velocidad
 
-	vk2[0] = -(c/m)*norma(fut_v)*norma(fut_v)*fut_v[0]/norma(fut_v);
+			fut_x[0][i] = x[0][i] + dt/6.0*( xk1[0][i] + 2*xk2[0][i] + 2*xk3[0][i] + xk4[0][i]);
 
+			fut_x[1][i] = x[1][i] + dt/6.0*( xk1[1][i] + 2*xk2[1][i] + 2*xk3[1][i] + xk4[1][i]);
 
+			fut_v[0][i] = v[0][i] + dt/6.0*( vk1[0][i] + 2*vk2[0][i] + 2*vk3[0][i] + vk4[0][i]);
 
-	vk2[1] = -g -(c/m)*norma(fut_v)*norma(fut_v)*fut_v[1]/norma(fut_v);
-
-	//Define y calcula k3, involucra mas el futuro, es casi igual que la segunda ecuacion
-
-	fut_v[0] = v[0] + 0.5*dt*vk2[0];
-
-	fut_v[1] = v[1] + 0.5*dt*vk2[1];
-
-	xk3[0] = fut_v[0];
-
-	xk3[1] = fut_v[1];//Con esto ya puedo definir la tercera ecuacion de la velocidad
-
-	vk3[0] = -(c/m)*norma(fut_v)*norma(fut_v)*fut_v[0]/norma(fut_v);
-
-	vk3[1] = -g -(c/m)*norma(fut_v)*norma(fut_v)*fut_v[1]/norma(fut_v);
-
-	//Define y calcula k4, es igual que la tercera y la segunda
-
-	fut_v[0] = v[0] + 1.0*dt*vk3[0];
-
-	fut_v[1] = v[1] + 1.0*dt*vk3[1];
-
-	xk4[0] = fut_v[0];
-
-	xk4[1] = fut_v[1];//Con esto ya puedo definir la cuarta ecuacion de la velocidad
-
-	vk4[0] = -(c/m)*norma(fut_v)*norma(fut_v)*fut_v[0]/norma(fut_v);
-
-	vk4[1] = -g -(c/m)*norma(fut_v)*norma(fut_v)*fut_v[1]/norma(fut_v);
-
-	//Uiliza las ecuaciones previamente definidas y calculadas para calcular los valores de posicion y velocidad
-
-	fut_x[0] = x[0] + dt/6.0*( xk1[0] + 2*xk2[0] + 2*xk3[0] + xk4[0]);
-
-	fut_x[1] = x[1] + dt/6.0*( xk1[1] + 2*xk2[1] + 2*xk3[1] + xk4[1]);
-
-	fut_v[0] = v[0] + dt/6.0*( vk1[0] + 2*vk2[0] + 2*vk3[0] + vk4[0]);
+			fut_v[1][i] = v[1][i] + dt/6.0*( vk1[1][i] + 2*vk2[1][i] + 2*vk3[1][i] + vk4[1][i]);
 
 
+			// El futuro ahora es el pasado
 
-	fut_v[1] = v[1] + dt/6.0*( vk1[1] + 2*vk2[1] + 2*vk3[1] + vk4[1]);
+			x[0][i] = fut_x[0][i];
 
-	//Actualiza el futuro
+			x[1][i] = fut_x[1][i];
 
-	x[0] = fut_x[0];
+			v[0][i] = fut_v[0][i];
 
-	x[1] = fut_x[1];
-
-	v[0] = fut_v[0];
-
+			v[1][i] = fut_v[1][i];
 
 
-	v[1] = fut_v[1];
+			//Cuando llega al piso es
+			if (fut_x[1][i] < 0.0)
+			{ 
+			
+				if (d_recorridax[i]==0.0)
+				{
+				d_recorridax[i] = x[0][i];
+				cout << x[0][i] << " ";
+				}
+			}
 
-	t = t+dt;
 
+			
+			}
+
+		salidax << " \n";
+		saliday << " \n";
+		salidavx << " \n";
+		salidavy << " \n";
+
+		t = t+dt;
+	} while (t<=tf);
+
+	//Define cuanto se lanza el proyectil a 45 grados
+
+
+	cout << "\n***El proyectil que se lanza a 45 grados recorre " << d_recorridax[0] << " en x *****";
+
+	int mas_lejos=1;
+	for (int i = 1; i < 8; ++i)
+	{
+		if (d_recorridax[i]>d_recorridax[mas_lejos])
+		{
+			mas_lejos = i;
+		}
 	}
-
-
-
-
-
-
-
-
-while (t<=tf);
+	//El proyectil que mas recorre //////
+	cout << "\n***El proyectil que mayor distancia recorre es el que se lanza a " << mas_lejos*10 << " grados ya que recorre " << d_recorridax[mas_lejos] << " en x *****\n";
 
 }
 
