@@ -82,11 +82,11 @@ float difusion(float CaCO3_0[60][30], float CaCO3_1[60][30], float cd)
 }
 
 
-////Comienza simulando la frontera fija 
+////Comienza simulando la frontera fija //////////////////////////////////////////////////////////////
 
 float Simular_frontera_fija()
 {
-	// Como el dominio es simetrico, solo tengo necesidad de simular la mitad del dominio
+	
 
 	// Para eso se crea una malla de 60*30
 
@@ -205,6 +205,143 @@ float Simular_frontera_fija()
 
 
 
+////////////////////////////////////////////////////////////////////SIMULA FRONTERA ABIERTA//////////////////////////////
+
+float Simular_frontera_abierta()
+{
+	
+	// Creo una malla igual que en frontera fija 
+ 
+
+
+	// limites del dominio
+
+
+	int n1=60;
+
+	int n2=30;
+
+	// a pesar de que el dominio es rectangular, cada nodo mide lo mismo porque 50/60 es igual que 25/30
+
+
+	float dx = 0.25/30;
+
+	// Define las constantes
+
+
+	float k=1.62;
+
+	float calor_especifico=820.0;
+
+	float rho=2710.0;
+
+	float v = k/(calor_especifico*rho);
+
+	float dt = pow(dx,2.0)*0.1/v;
+
+	int iteraciones_tiempo=10000;
+
+	float cd=v*dt/pow(dx,2);
+
+
+
+	// Define de nuevo la calcita
+
+	float CaCO3_0[60][30];
+
+	float CaCO3_1[60][30];
+
+
+	//Crea las matrices con ceros
+
+	for (int i = 0; i < n1; ++i)
+	{
+		for (int j = 0; j < n2; ++j)
+		{
+			CaCO3_0[i][j] = 0.0;
+
+			CaCO3_1[i][j] = 0.0;
+		}
+	}
+
+
+	//Pide las temperaturas de las varillas y de los bordes
+
+
+	temperatura_varilla(CaCO3_0);
+
+
+	temperatura_varilla(CaCO3_1);
+
+
+
+	// Recorre para encontrar difusion y temperatura
+
+
+
+	for (int ki = 0; ki < iteraciones_tiempo; ++ki)
+	{
+		
+		difusion(CaCO3_0, CaCO3_1, cd);
+
+		
+		temperatura_varilla(CaCO3_1);
+
+		
+		// Condiciones de frontera
+
+		for (int j = 0; j < 29; ++j)
+		{
+			// Calcula los bordes
+
+
+			CaCO3_1[0][j] = CaCO3_1[1][j];
+
+			CaCO3_1[59][j] = CaCO3_1[58][j];
+
+		}
+
+		for (int i = 0; i < 60; ++i)
+		{
+			// Borde derecho
+
+			CaCO3_1[i][29] = CaCO3_1[i][28];
+
+		}
+
+
+		// Para lo siguiente, e futuro es el pasado ahora 
+		for (int i = 0; i < n1; ++i)
+		{
+			for (int j = 0; j < n2; ++j)
+			{
+				CaCO3_0[i][j] = CaCO3_1[i][j];
+			}
+		}
+	}
+	
+
+
+	ofstream CaCO3_txt("fronteraA_CaCO3.txt");
+	for (int i = 0; i < n1; ++i)
+	{
+		for (int j = 0; j < n2; ++j)
+		{
+		CaCO3_txt << CaCO3_1[i][j] << " ";
+		}CaCO3_txt << "\n";
+	}
+
+}
+
+
+
+
+////////////SIMULA FRONTERA PERIODICA////////////////////////////////////////
+
+
+
+
+
 
 
 
@@ -218,7 +355,7 @@ float Simular_frontera_fija()
 int main()
 {
 	Simular_frontera_fija();
-	//Simular_frontera_abierta();
+	Simular_frontera_abierta();
 	//Simular_frontera_periodica();
 	
 }
