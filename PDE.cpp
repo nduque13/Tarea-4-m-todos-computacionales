@@ -339,6 +339,155 @@ float Simular_frontera_abierta()
 ////////////SIMULA FRONTERA PERIODICA////////////////////////////////////////
 
 
+float Simular_frontera_periodica()
+{
+	
+
+	// Define los mismos limites
+
+
+	int n1=60;
+
+
+	int n2=30;
+
+	// a pesar de que el dominio es rectangular, cada nodo mide lo mismo porque 50/60 es igual que 25/30
+
+	float dx = 0.25/30;
+
+	// Define las constantes
+	float k=1.62;
+
+	float calor_especifico=820.0;
+
+	float rho=2710.0;
+
+	float v = k/(calor_especifico*rho);
+
+	float dt = pow(dx,2.0)*0.1/v;
+
+	int iteraciones_tiempo=10000;
+
+	float cd=v*dt/pow(dx,2);
+
+
+	// Define OTRA VEZ calcita
+
+
+	float CaCO3_0[60][30];
+
+	float CaCO3_1[60][30];
+
+
+	// Crea las mismas matrices de ceros
+
+	for (int i = 0; i < n1; ++i)
+	{
+		for (int j = 0; j < n2; ++j)
+		{
+			CaCO3_0[i][j] = 0.0;
+
+			CaCO3_1[i][j] = 0.0;
+		}
+	}
+	// Pide las t de las varillas y los bordes
+
+	temperatura_varilla(CaCO3_0);
+
+
+	temperatura_varilla(CaCO3_1);
+
+
+
+	// Recorrido para hallar difusion y la tempratura recalculada
+
+
+	for (int ki = 0; ki < iteraciones_tiempo; ++ki)
+	{
+		
+		difusion(CaCO3_0, CaCO3_1, cd);
+
+		
+		temperatura_varilla(CaCO3_1);
+
+		
+		// Define las condiciones de frontera periodica
+
+
+		for (int j = 1; j < 29; ++j)
+		{
+			// Bordes superior e inferior
+
+
+			CaCO3_1[0][j] = cd*( CaCO3_0[0][j-1] + CaCO3_0[0][j+1] + CaCO3_0[59][j] + CaCO3_0[1][j]);
+
+			CaCO3_1[0][j] += (CaCO3_0[0][j]*(1.0-4.0*cd));
+
+			CaCO3_1[59][j] = cd*( CaCO3_0[59][j-1] + CaCO3_0[59][j+1] + CaCO3_0[58][j]+ CaCO3_0[0][j] );
+
+
+			CaCO3_1[59][j] += (CaCO3_0[59][j]*(1.0-4.0*cd));
+
+		}
+
+		for (int i = 1; i < 59; ++i)
+		{
+
+			// Borde derecho
+
+
+			CaCO3_1[i][29] = cd*( CaCO3_0[i-1][29] + CaCO3_0[i+1][29] + CaCO3_0[i][28]+ CaCO3_0[i][28] );
+
+
+			CaCO3_1[i][29] += (CaCO3_0[i][29]*(1.0-4.0*cd));
+		}
+
+		// Por ultimo las esquinas
+		CaCO3_1[0][0] = cd*( CaCO3_0[1][0] + CaCO3_0[59][0] + CaCO3_0[0][29] + CaCO3_0[0][1]);
+
+		CaCO3_1[0][0] += (CaCO3_0[0][0]*(1.0-4.0*cd));
+
+
+		CaCO3_1[0][29] = cd*( CaCO3_0[59][29] + CaCO3_0[1][29] + CaCO3_0[0][28] + CaCO3_0[0][0]);
+
+		CaCO3_1[0][29] += (CaCO3_0[0][29]*(1.0-4.0*cd));		
+
+
+		CaCO3_1[59][0] = cd*( CaCO3_0[58][0] + CaCO3_0[0][0] + CaCO3_0[59][29] + CaCO3_0[59][1]);
+
+		CaCO3_1[59][0] += (CaCO3_0[59][0]*(1.0-4.0*cd));		
+
+
+		CaCO3_1[59][29] = cd*( CaCO3_0[58][29] + CaCO3_0[0][29] + CaCO3_0[59][28] + CaCO3_0[59][60]);
+
+		CaCO3_1[59][29] += (CaCO3_0[59][29]*(1.0-4.0*cd));		
+
+
+
+
+		//Cambia el tiempo, el futuro es el pasado ahora papaa
+
+		for (int i = 0; i < n1; ++i)
+		{
+			for (int j = 0; j < n2; ++j)
+			{
+				CaCO3_0[i][j] = CaCO3_1[i][j];
+			}
+		}
+	}
+	
+
+
+	ofstream CaCO3_txt("fronteraP_CaCO3.txt");
+	for (int i = 0; i < n1; ++i)
+	{
+		for (int j = 0; j < n2; ++j)
+		{
+		CaCO3_txt << CaCO3_1[i][j] << " ";
+		}CaCO3_txt << "\n";
+	}
+
+}
 
 
 
@@ -356,7 +505,7 @@ int main()
 {
 	Simular_frontera_fija();
 	Simular_frontera_abierta();
-	//Simular_frontera_periodica();
+	Simular_frontera_periodica();
 	
 }
 
