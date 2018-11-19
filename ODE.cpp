@@ -10,7 +10,7 @@
 using std::cout;
 using std::cin;
 using std::endl;
-
+using namespace std;
 
 
 //Crea las variables que van a ser usadas a lo largo del ejercicio, como gravedad, C y demas
@@ -40,40 +40,73 @@ float norma(float *v)
 
 int main(){
 
-	//Creo arreglos que almacenen dos velocidades y dos posiciones, como x (posicion) y v (velocidad)
-	float x[2];
+	//Creo arreglos que almacenen dos velocidades y dos posiciones, como x (posicion) y v (velocidad), lo calcula para los 8 angulos
 
-	float v[2];
 
-	x[0] = 0.0; x[1]=0.0;
+	float x[2][8];
 
-	v[0] = 300.0*cos(2*3.1416*45.0/360.0);
+	float v[2][8];
 
-	v[1] = 300.0*sin(2*3.1416*45.0/360.0);
+
+	////Inicializa cada posicion 
+
+	for (int i = 0; i < 8; ++i)
+	{	
+		x[0][i] = 0.0; x[1][i]=0.0;	
+	}
+
+
+	//pasa a inicializar cada velocidad
+
+	
+	v[0][0] = 300.0*cos(2*3.1416*45.0/360.0);
+	v[1][0] = 300.0*sin(2*3.1416*45.0/360.0);
+
+	v[0][1] = 300.0*cos(2*3.1416*10.0/360.0);
+	v[1][1] = 300.0*sin(2*3.1416*10.0/360.0);
+	v[0][2] = 300.0*cos(2*3.1416*20.0/360.0);
+	v[1][2] = 300.0*sin(2*3.1416*20.0/360.0);
+	v[0][3] = 300.0*cos(2*3.1416*30.0/360.0);
+	v[1][3] = 300.0*sin(2*3.1416*30.0/360.0);
+	v[0][4] = 300.0*cos(2*3.1416*40.0/360.0);
+	v[1][4] = 300.0*sin(2*3.1416*40.0/360.0);
+	v[0][5] = 300.0*cos(2*3.1416*50.0/360.0);
+	v[1][5] = 300.0*sin(2*3.1416*50.0/360.0);
+	v[0][6] = 300.0*cos(2*3.1416*60.0/360.0);
+	v[1][6] = 300.0*sin(2*3.1416*60.0/360.0);
+	v[0][7] = 300.0*cos(2*3.1416*70.0/360.0);
+	v[1][7] = 300.0*sin(2*3.1416*70.0/360.0);
+
+
 
 	//Creo los arreglos para el metodo de solucion de RungeKutta
 	//Creo 4 ecuaciones para la posicion y 4 ecuaciones para la velocidad
 	//Posiciones
-	float xk1[2];
-	float xk2[2];
-	float xk3[2];
-	float xk4[2];
 
 
-	//Velocidad
-	float vk1[2];
-	float vk2[2];
-	float vk3[2];
-	float vk4[2];
+	float xk1[2][8];
+	float xk2[2][8];
+	float xk3[2][8];
+	float xk4[2][8];
+
+
+	//Velocidades
+
+
+	float vk1[2][8];
+	float vk2[2][8];
+	float vk3[2][8];
+	float vk4[2][8];
+
 
 	//Crea los arreglos que almacenen el futuro para las posiciones y para las velocidades
 
-	float fut_x[2];
-	float fut_v[2];
+	float fut_x[2][8];
+	float fut_v[2][8];
 
 	//Crea un archivo de salida que almacene posiciones y velocidades del proyectil
 
-	fstream salida("salida.txt");
+	std::ofstream salida("salida.txt");
 
 
 	do
@@ -165,7 +198,7 @@ int main(){
 
 	v[1] = fut_v[1];
 
-	t = t+dt
+	t = t+dt;
 
 	}
 
